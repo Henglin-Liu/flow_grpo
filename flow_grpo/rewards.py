@@ -140,6 +140,22 @@ def ocr_score(device):
 
     return _fn
 
+def face_score(device):
+    from flow_grpo.face_scorer import FaceSimilarityFIDScorer
+
+    scorer = FaceSimilarityFIDScorer(device=device)
+
+    def _fn(videos, images, prompts):
+        videos = (videos * 255).round().clamp(0, 255).to(torch.uint8).cpu().numpy()
+        videos = videos.transpose(0, 1, 3, 4, 2)  # NCHW -> NHWC
+        
+
+        scores = scorer(videos, images, prompts)
+        # change tensor to list
+        return scores, {}
+
+    return _fn
+
 
 def deqa_score_remote(device):
     """Submits images to DeQA and computes a reward.
@@ -403,6 +419,7 @@ def multi_score(device, score_dict):
         "geneval": geneval_score,
         "clipscore": clip_score,
         "image_similarity": image_similarity_score,
+        "face": face_score,
     }
     score_fns={}
     for score_name, weight in score_dict.items():

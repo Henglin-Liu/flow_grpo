@@ -1,0 +1,1 @@
+accelerate launch --config_file scripts/accelerate_configs/multi_gpu.yaml --num_processes=8 --main_process_port 29401 scripts/train_sd3.py --config config/grpo.py:geneval_sd3_16gpu

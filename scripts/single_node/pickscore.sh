@@ -1,0 +1,3 @@
+export http_proxy=http://oversea-squid2.ko.txyun:11080 https_proxy=http://oversea-squid2.ko.txyun:11080 no_proxy=localhost,127.0.0.1,localaddress,localdomain.com,internal,corp.kuaishou.com,test.gifshow.com,staging.kuaishou.com
+export HF_HOME=/m2v_intern/liuhenglin/code/video_gen/models
+accelerate launch --config_file scripts/accelerate_configs/multi_gpu.yaml --num_processes=8 --main_process_port 29401 scripts/train_sd3.py --config config/grpo.py:pickscore_sd3_8gpu

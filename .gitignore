@@ -306,3 +306,11 @@ tags
 wandb/
 logs/
 notebooks/
+
+# consisID相关 失败参考图
+failure
+# consisID相关 权重
+ckpts
+temp_video
+BestWishYsh
+mmdetection

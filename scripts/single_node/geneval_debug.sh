@@ -1,0 +1,3 @@
+# accelerate launch --config_file scripts/accelerate_configs/multi_gpu.yaml --num_processes=1 --main_process_port 29549 \
+#     -m debugpy --wait-for-client --listen 5680 scripts/train_sd3.py --config config/grpo.py:geneval_sd3_1gpu
+accelerate launch --config_file scripts/accelerate_configs/multi_gpu.yaml --num_processes=1 --main_process_port 29549 scripts/train_sd3.py --config config/grpo.py:geneval_sd3_1gpu

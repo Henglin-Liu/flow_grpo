@@ -128,7 +128,7 @@ def compute_text_embeddings(prompt, text_encoders, tokenizers, max_sequence_leng
         )
         prompt_embeds = prompt_embeds.to(device)
         pooled_prompt_embeds = pooled_prompt_embeds.to(device)
-    return prompt_embeds, pooled_prompt_embeds
+    return prompt_embeds, pooled_prompt_embeds # [1, 2048]
 
 def calculate_zero_std_ratio(prompts, gathered_rewards):
     """
@@ -700,6 +700,11 @@ def main(_):
                 key: torch.as_tensor(value, device=accelerator.device).float()
                 for key, value in rewards.items()
             }
+            ''' 备注
+            sample["rewards"]是{'ocr': tensor([1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 0.8571, 0.8571],
+       device='cuda:0'), 'avg': tensor([1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 0.8571, 0.8571],
+       device='cuda:0')}
+            '''
 
         # collate samples into dict where each entry has shape (num_batches_per_epoch * sample.batch_size, ...)
         samples = {
@@ -840,6 +845,10 @@ def main(_):
                 k: v.reshape(-1, total_batch_size//config.sample.num_batches_per_epoch, *v.shape[1:])
                 for k, v in samples.items()
             }
+            '''
+            samples['prompt_embeds'].shape torch.Size([64, 205, 4096])
+            samples['timesteps'].shape torch.Size([64, 10])
+            '''
 
             # dict of lists -> list of dicts for easier iteration
             samples_batched = [
@@ -856,7 +865,7 @@ def main(_):
                 disable=not accelerator.is_local_main_process,
             ):
                 if config.train.cfg:
-                    # concat negative prompts to sample prompts to avoid two forward passes
+                    # concat negative prompts to sample prompts to avoid two forward passes???
                     embeds = torch.cat(
                         [train_neg_prompt_embeds[:len(sample["prompt_embeds"])], sample["prompt_embeds"]]
                     )
